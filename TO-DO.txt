@@ -1,0 +1,14 @@
+Create database tables and insert data
+
+Map db into Java classes... ORM: Hibernate?
+
+Publish WebService
+
+Define basic tests
+
+Run a few automated tests
+
+Mavenize project
+
+Demo :-)
+
