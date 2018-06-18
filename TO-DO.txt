@@ -1,4 +1,8 @@
-Create database tables and insert data
+DONE:
+
+Create database tables and insert data: installes mysql locally, created user, database, tables and populated data
+
+TO-DO:
 
 Map db into Java classes... ORM: Hibernate?
 
