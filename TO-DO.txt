@@ -6,7 +6,7 @@ TO-DO:
 
 Map db into Java classes... ORM: Hibernate?
 
-Publish WebService
+Publish WebService, use JAX-WS service
 
 Define basic tests
 
