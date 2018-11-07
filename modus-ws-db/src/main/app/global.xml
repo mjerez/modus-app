@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule xmlns:cluster="http://www.mulesoft.org/schema/mule/ee/cluster" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+    xmlns:spring="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
@@ -20,8 +20,8 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         <http:config useTransportForUris="false"/>
     </configuration>
     <catch-exception-strategy name="catchExceptionGeneral">
-        <set-payload value="Exception Raised:  #[exception]" doc:name="Set the exception back"/>
-        <set-property propertyName="http.status" value="201" doc:name="http.status=201"/>
+        <set-payload value="&quot;message&quot;:&quot;Exception Raised:  #[exception]&quot;" doc:name="Set the exception back"/>
+        <set-property propertyName="http.status" value="400" doc:name="http.status=400"/>
         <logger message="#[payload]" level="INFO" doc:name="Logger"/>
     </catch-exception-strategy>
 </mule>
