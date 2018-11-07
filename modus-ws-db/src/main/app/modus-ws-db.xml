@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <flow name="getOrderByID">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/order/{orderNumber}" allowedMethods="GET" doc:name="HTTP"/>
+        <db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[select o.OrderID, oi.ItemCount, o.CustomerName,
+       i.ItemCost
+from   Orders o, OrderItems oi, Items i
+where  o.OrderId=oi.OrderId
+and    oi.ItemID=i.ItemID
+and    oi.orderID=#[message.inboundProperties.'http.uri.params'.orderNumber]]]></db:parameterized-query>
+        </db:select>
+        <dw:transform-message doc:name="Transform Message" metadata:id="824f7591-3a9a-4ffa-9fa8-df740f5cf53d">
+            <dw:input-payload doc:sample="sample_data\list_map.dwl"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	Order: {
+		"Customer Name": payload.CustomerName[0],
+		"Order Id": payload.OrderID[0],
+		Items: payload map ((payload01 , indexOfPayload01) -> {
+			"Item Count": payload01.ItemCount as :string,
+			"Item Cost": payload01.ItemCost as :string
+		})
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+
+    </flow>
+    <flow name="getAllOrders">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/listOrders" doc:name="HTTP"/>
+        <db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[select o.OrderID, o.CustomerName
+from   Orders o]]></db:parameterized-query>
+
+        </db:select>
+        <dw:transform-message doc:name="Transform Message" metadata:id="a6b67a6c-9ebe-431b-b22d-cdc294dac1b1">
+            <dw:input-payload doc:sample="sample_data\list_map_1.dwl"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+
+payload map {
+	order: $
+} ]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="#[message.payload]" level="INFO" doc:name="Logger"/>
+
+    </flow>
+
+</mule>
